@@ -1,0 +1,75 @@
+# Service annotation cloud.google.com/neg: '{"ingress": true}' 
+# Means to create Container-Native Load Balancer with Standalone NEGs.
+# REF1: https://cloud.google.com/kubernetes-engine/docs/concepts/container-native-load-balancing
+# REF2: https://cloud.google.com/kubernetes-engine/docs/how-to/standalone-neg#standalone_negs
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: juice-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: juice-shop
+  template:
+    metadata:
+      labels:
+        app: juice-shop
+    spec:
+      containers:
+      - name: juice-shop
+        image: bkimminich/juice-shop
+        ports:
+        - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: juice-shop-service
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"ports": {
+    "juice-service-port":"juice-backendconfig"
+    }}'
+spec:
+  selector:
+    app: juice-shop
+  ports:
+    - name: juice-service-port
+      protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+
+---
+
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: juice-backendconfig
+spec:
+  securityPolicy:
+    name: "juice-ca-policy"
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: juice-shop-ingress
+  annotations:
+    spec.ingressClassName: "gce"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: juice-shop-service
+            port:
+              number: 80
