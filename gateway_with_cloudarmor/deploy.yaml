@@ -69,6 +69,9 @@ metadata:
 spec:
   default:
     securityPolicy: "juice-ca-policy"
+    logging:
+      enabled: true
+      sampleRate: 500000
   targetRef:
     group: ""
     kind: Service
