@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-site
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: test-site
+  template:
+    metadata:
+      labels:
+        app: test-site
+    spec:
+      containers:
+      - name: test-site
+        image: asia-east1-docker.pkg.dev/williamlab/sample-nginx-server/website1:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-site-service
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: test-site
+  type: ClusterIP

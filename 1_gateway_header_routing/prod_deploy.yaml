@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-site
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: prod-site
+  template:
+    metadata:
+      labels:
+        app: prod-site
+    spec:
+      containers:
+      - name: prod-site
+        image: asia-east1-docker.pkg.dev/williamlab/sample-nginx-server/website2:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-site-service
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: prod-site
+  type: ClusterIP
