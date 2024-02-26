@@ -15,7 +15,7 @@ spec:
       containers:
       - name: test-site
         image: asia-east1-docker.pkg.dev/williamlab/sample-nginx-server/website1:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---
@@ -44,7 +44,7 @@ spec:
   rules:
   - matches:
     - path:
-      value: /
+        value: /test
     backendRefs:
     - name: test-site-service
       port: 80
