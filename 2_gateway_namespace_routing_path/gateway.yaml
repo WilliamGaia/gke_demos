@@ -4,7 +4,7 @@ metadata:
   name: gxmlb-gateway
   namespace: default
 spec:
-  gatewayClassName: gke-l7-global-external-managed
+  gatewayClassName: gke-l7-global-external-managed # Specifies the GatewayClass to be used, here it's a GKE L7 global external managed GatewayClass
   listeners:
   - name: http
     protocol: HTTP
@@ -13,5 +13,5 @@ spec:
       kinds:
       - kind: HTTPRoute
       namespaces:
-          from: All
+          from: All  # Allows routes from all namespaces to be attached to this Gateway
 

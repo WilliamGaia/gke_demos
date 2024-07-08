@@ -28,8 +28,8 @@ spec:
         - name: test-site-service
           namespace: default
           port: 80
-          weight: 75
+          weight: 75  # Weight for traffic splitting to the first backend service
         - name: prod-site-service
           namespace: default
           port: 80
-          weight: 25
+          weight: 25  # Weight for traffic splitting to the second backend service

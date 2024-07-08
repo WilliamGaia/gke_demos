@@ -26,7 +26,7 @@ metadata:
   name: test-site-service
   namespace: default
   annotations:
-    networking.gke.io/max-rate-per-endpoint: "10"
+    networking.gke.io/max-rate-per-endpoint: "10" # The maximum traffic a Service should receive in requests per second, per Pod.
 spec:
   ports:
     - port: 80

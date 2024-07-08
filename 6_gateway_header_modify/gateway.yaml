@@ -26,18 +26,18 @@ spec:
   rules:
   - matches:
       - path:
-            type: PathPrefix
+            type: PathPrefix # Type of path match (prefix-based matching)
             value: /
     filters:
-        - type: RequestHeaderModifier
+        - type: RequestHeaderModifier  # Type of filter applied to the route (modifying request headers)
           requestHeaderModifier:
-            add:
+            add: # Add header
               - name: "x-new-header"
                 value: "This-is-new-header"
-            set: 
+            set: # Modify header
               - name: "x-site-env"
                 value: "test-modified-value"
-            remove: ["x-delete-header"]
+            remove: ["x-delete-header"] # Delete header
     backendRefs: 
       - name: test-site-service
         port: 80 

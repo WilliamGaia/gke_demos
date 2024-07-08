@@ -1,0 +1,22 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: traffic-autoscale  # Name of the HorizontalPodAutoscaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment  # The target resource to scale
+    name: test-site  # Name of the target deployment
+  minReplicas: 1  
+  maxReplicas: 3  
+  metrics:
+  - type: Object  # Type of metric (object-based metric)
+    object:
+      describedObject:
+        kind: Service
+        name: test-site-service # The name of the described object
+      metric:
+        name: "autoscaling.googleapis.com|gclb-capacity-utilization" # autoscaling based on lb traffic
+      target:
+        averageValue: 70  # replicas = ceiling[ current traffic / ( averageUtilization * max-rate-per-endpoint) ]
+        type: AverageValue

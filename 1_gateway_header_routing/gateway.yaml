@@ -1,45 +1,45 @@
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
-  name: gxmlb-gateway
-  namespace: default
+  name: gxmlb-gateway # Name of the Gateway
+  namespace: default # Namespace where the Gateway is created
 spec:
-  gatewayClassName: gke-l7-global-external-managed
+  gatewayClassName: gke-l7-global-external-managed # Specifies the GatewayClass to be used, here it's a GKE L7 global external managed GatewayClass
   listeners:
   - name: http
     protocol: HTTP
     port: 80
     allowedRoutes:
       kinds:
-      - kind: HTTPRoute
+      - kind: HTTPRoute # Type of route this Gateway will allow
       namespaces:
-          from: Same
+          from: Same # Restricts allowed routes to the same namespace as the Gateway
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
-  name: test-route
-  namespace: default
+  name: test-route # Name of the HTTPRoute
+  namespace: default # Namespace where the HTTPRoute is created
 spec:
   parentRefs:
-  - name: gxmlb-gateway
+  - name: gxmlb-gateway # Reference to the Gateway that will manage this route
   rules:
   - matches:
       - headers:
           - name: X-Site-Env
             value: "test"   
-            type: Exact  
+            type: Exact  # Exact match for the header X-Site-Env with value "test"
     backendRefs: 
-      - name: test-site-service
-        port: 80 
+      - name: test-site-service # Name of the backend service for "test" environment
+        port: 80  
   - matches:
       - headers:
           - name: X-Site-Env
             value: "prod"
-            type: Exact
+            type: Exact  # Exact match for the header X-Site-Env with value "prod"
     backendRefs:
-      - name: prod-site-service
+      - name: prod-site-service # Name of the backend service for "prod" environment
         port: 80
   - backendRefs:
-      - name: test-site-service
+      - name: test-site-service # Default backend service if no header match occurs
         port: 80
